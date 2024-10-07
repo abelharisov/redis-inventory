@@ -36,9 +36,10 @@ var scanCmd = &cobra.Command{
 		resultTrie := trie.NewTrie(trie.NewPunctuationSplitter([]rune(separators)...), maxChildren)
 		redisScanner.Scan(
 			adapter.ScanOptions{
-				ScanCount: scanCount,
-				Pattern:   pattern,
-				Throttle:  throttleNs,
+				ScanCount:        scanCount,
+				Pattern:          pattern,
+				Throttle:         throttleNs,
+				IgnoreKeysRegexp: ignoreKeysRegexp,
 			},
 			resultTrie,
 		)
@@ -67,4 +68,5 @@ func init() {
 	scanCmd.Flags().StringVarP(&pattern, "pattern", "k", "*", "Glob pattern limiting the keys to be aggregated")
 	scanCmd.Flags().IntVarP(&scanCount, "scanCount", "c", 1000, "Number of keys to be scanned in one iteration (argument of scan command)")
 	scanCmd.Flags().IntVarP(&throttleNs, "throttle", "t", 0, "Throttle: number of nanoseconds to sleep between keys")
+	scanCmd.Flags().StringVarP(&ignoreKeysRegexp, "ignoreKeysRegexp", "i", "", "Ignore keys matching this regexp")
 }

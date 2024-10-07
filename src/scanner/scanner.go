@@ -2,6 +2,7 @@ package scanner
 
 import (
 	"context"
+	"regexp"
 	"runtime"
 	"sync"
 
@@ -53,6 +54,18 @@ func (s *RedisScanner) Scan(options adapter.ScanOptions, result *trie.Trie) {
 
 			for key := range keys {
 				s.scanProgress.Increment()
+
+				if options.IgnoreKeysRegexp != "" {
+					match, err := regexp.MatchString(options.IgnoreKeysRegexp, key)
+					if err != nil {
+						s.logger.Error().Err(err).Msgf("Error regexp matching key")
+						return
+					}
+					if match {
+						continue
+					}
+				}
+
 				res, err := s.redisService.GetMemoryUsage(context.Background(), key)
 				if err != nil {
 					s.logger.Error().Err(err).Msgf("Error dumping key %s", key)

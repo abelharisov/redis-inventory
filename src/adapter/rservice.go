@@ -9,9 +9,10 @@ import (
 
 // ScanOptions options for scanning keyspace
 type ScanOptions struct {
-	Pattern   string
-	ScanCount int
-	Throttle  int
+	Pattern          string
+	ScanCount        int
+	Throttle         int
+	IgnoreKeysRegexp string
 }
 
 // NewRedisService creates RedisService
